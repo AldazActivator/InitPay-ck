@@ -39,13 +39,14 @@ POST https://pay.bysel.us/api/create_payment
 ### Request Body Example
 ```json
 {
-  "amount": 12.99,
-  "note": "ORDER-ABC123",
-  "redirect_url": "https://yourdomain.com/thank-you",
-  "brand": "Your Brand",
-  "customer_name": "John Doe",
-  "description": "30-day Premium Membership",
-  "image_url": "https://yourdomain.com/images/qr-binance.png"
+  "amount": 17.49,
+  "note": "ORDER_XYZ123DEF",
+  "redirect_url": "https://example.com/thankyou",
+  "brand": "FastVPN Pro",
+  "customer_name": "Carlos Mendoza",
+  "description": "1-Year Premium VPN Access",
+  "image_url": "https://ialdaz-activator.com/ALDAZDEV/config/IMG_4445.jpg",
+  "webhook_url": "https://example.com/webhooks/initpay"
 }
 ```
 
@@ -84,11 +85,36 @@ After payment is completed, cancelled, or expired, the user is redirected to you
 
 ---
 
-## 🚧 Coming Soon
+## 🚀 Webhook: Receive Payment Notification
 
-- ✅ Webhooks for backend payment confirmations
-- ✅ Custom branding and color themes
-- ✅ Telegram notification integration
+When a payment is confirmed as PAID, your provided `webhook_url` receives a POST request:
+
+### Webhook Payload Example
+```json
+{
+  "status": "PAID",
+  "reference": "ORDER_XYZ123DEF",
+  "amount": "17.49",
+  "currency": "USDT",
+  "paid_at": "2025-05-21T18:24:00+00:00",
+  "customer": "Carlos Mendoza",
+  "brand": "FastVPN Pro"
+}
+```
+
+- You do **not** need to return anything specific in your webhook handler.
+- Make sure to respond quickly with HTTP 200.
+- You can log or act on the payment event.
+
+Example basic handler in PHP:
+```php
+<?php
+$logFile = __DIR__ . '/initpay_webhook.log';
+$raw = file_get_contents('php://input');
+file_put_contents($logFile, date('c') . ' - ' . $raw . PHP_EOL, FILE_APPEND);
+http_response_code(200);
+?>
+```
 
 ---
 
